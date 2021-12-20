@@ -30,7 +30,10 @@ const DishDetail = (props) => {
                 
                 <RenderDish dish={props.dish} />
             
-                <RenderComments comments={props.comments} />
+                <RenderComments comments={props.comments} 
+                    addComment={props.addComment}
+                    dishId={props.dish.id}
+                />
 
             </div>
         </div>
@@ -58,7 +61,7 @@ function RenderDish({dish}) {
     }
 }
 
-function RenderComments({comments}) {
+function RenderComments({comments, addComment, dishId}) {
 
     if (comments != null) {
         let commentData = comments.map((data) => {
@@ -79,7 +82,7 @@ function RenderComments({comments}) {
                     {commentData}
                 </div>
 
-                <CommentForm></CommentForm>
+                <CommentForm dishId={dishId} addComment={addComment} ></CommentForm>
             </div>
         )
 
@@ -98,11 +101,17 @@ class CommentForm extends Component {
         this.state = {
             isModalOpen: false 
         }
+
+        this.toggleModal = this.toggleModal.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
     
     toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
-    toggleModal = this.toggleModal.bind(this);
+    handleSubmit(values) {
+        this.toggleModal();
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+    }
 
     render() {
         return (
@@ -117,7 +126,7 @@ class CommentForm extends Component {
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
                     <ModalBody>
-                        <LocalForm onSubmit={ (values) => alert(JSON.stringify(values)) } className='col-12'>
+                        <LocalForm onSubmit={ this.handleSubmit } className='col-12'>
                             <Row className="form-group">
                                 <Label htmlFor="rating">Rating</Label>
                                 <Control.select model=".rating" id="rating" name="rating"
