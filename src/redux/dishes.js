@@ -1,7 +1,9 @@
-import { DISHES } from '../shared/dishes';
 import * as ActionTypes from './ActionTypes';
 
-export const Dishes = (state = DISHES, action) => {
+export const Dishes = (state = { isLoading: true,
+                            errMess: null,
+                            dishes:[] 
+                        }, action) => {
     
     switch (action.type) {
         case ActionTypes.ADD_DISHES:
